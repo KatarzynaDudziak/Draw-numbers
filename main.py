@@ -14,9 +14,12 @@ class Config:
         self.points = points
 
 
-def enter_your_name():
+def get_name():
     print(f"Enter your name:")
     name = input()
+
+    if name == "":
+        name += "player"
 
     return name
 
@@ -30,36 +33,35 @@ def choose_level(player, configs):
         i += 1
 
     playerConfig = input()
-    return int(playerConfig)
+
+    try:
+        return int(playerConfig)
+    except ValueError:
+        return -1
 
 
 def is_level_correct(configs, player):
-    if player.level < 0 or player.level > len(configs):
+    if player.level <= 0 or player.level > len(configs):
         return False
     return True
 
 
-def enter_the_numbers(config: Config):
+def get_numbers(config: Config):
     print(f"Enter your {config.playerNumbers} unique numbers from "
             f"{config.startOfRange} to {config.endOfRange} separated by a comma:")
     selectedNumbers = input()
-    setSelectedNumbers = set()
 
-    for number in selectedNumbers.split(","):
-        try:
-            setSelectedNumbers.add(int(number))
-        except ValueError:
-            print("ERROR: numbers must be separated by one comma!")
-            exit()
-    return setSelectedNumbers
+    try:
+        return set(int(x) for x in selectedNumbers.split(","))
+    except:
+        return -1
 
 
-def validating_numbers(setSelectedNumbers, config: Config):
+def validated_numbers(setSelectedNumbers, config: Config):
     if len(setSelectedNumbers) != config.playerNumbers:
-        
         return False
     return True
-   
+
 
 def main():
     player = Player()
@@ -67,17 +69,21 @@ def main():
         Config(1, 10, 3, "easy", 10),
         Config(1, 50, 5, "medium", 20),
         Config(1, 100, 8, "hard", 40)]
-    player.name = enter_your_name()
+    player.name = get_name()
     player.level = choose_level(player, configs)
 
     if is_level_correct(configs, player):
         print(f"{player.name} you selected level: {player.level}")
-        enterNumbers = enter_the_numbers(configs[player.level - 1])
+        getNumbers = get_numbers(configs[player.level - 1])
+        if getNumbers == -1:
+            print("Error: You should choose the numbers from given range")
+            exit()
     else:
         print(f"{player.name} the selected level is incorrect!")
+        exit()
 
-    if validating_numbers(enterNumbers, configs[player.level - 1]) is False:
-        print(f"You entered the wrong number of numbers")
+    if validated_numbers(getNumbers, configs[player.level - 1]) is False:
+        print(f"You entered the wrong amount of numbers")
     else:
         print("Let's start the draw!")
 
