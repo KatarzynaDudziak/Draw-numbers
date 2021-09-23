@@ -3,32 +3,37 @@ import time
 import Player, Config
 
 class Game:
-    def __init__(self, selectedNumbers=None, drawnNumbers=None, hitNumbers=None, config=None):
-        self.selectedNumbers = selectedNumbers
+    def __init__(self, drawnNumbers=None, hitNumbers=None, config=None):
         self.drawnNumbers = drawnNumbers
         self.hitNumbers = hitNumbers
         self.config = config
 
+    def print_configs(self, configs, player: Player):
+        print(f"{player.name}, choose difficulty level: ")
+        i = 1
+
+        for element in configs:
+            print(f"{i} - {element.difficulty}")
+            i += 1
+
+    def get_level_from_user(self):
+        try:
+            level = int(input()) -1
+        except:
+            level = - 1
+        return level
+
     def choose_level(self, configs, player: Player):
-        retryInput = True
-        while retryInput:
-            print(f"{player.name}, choose difficulty level: ")
-            i = 1
+        self.print_configs(configs, player)
+        level = self.get_level_from_user()
 
-            for element in configs:
-                print(f"{i} - {element.difficulty}")
-                i += 1
+        while not (level >= 0 and level < len(configs)):
+            print(f"{player.name} the selected level is incorrect!")
+            self.print_configs(configs, player)
+            level = self.get_level_from_user()
 
-            try:
-                level = int(input()) - 1
-                if level < 0 or level >= len(configs):
-                    print(f"{player.name} the selected level is incorrect!")
-                else:
-                    print(f"{player.name} you selected level: {level + 1}")
-                    self.config = configs[level]
-                    retryInput = False
-            except:
-                print("Please, select a level from the given.")
+        print(f"{player.name} you selected level: {level + 1}")
+        self.config = configs[level]
 
     def get_config(self) -> Config:
         return self.config
@@ -38,15 +43,19 @@ class Game:
             f"Enter your {self.config.playerNumbers} unique numbers from "
             f"{self.config.startOfRange} to {self.config.endOfRange} separated by a comma:")
 
-        self.selectedNumbers = set(int(x) for x in input().split(","))
-        elements = []
-
-        for x in self.selectedNumbers: 
-            if x in range(self.config.startOfRange, self.config.endOfRange):
-                elements.append(x)
-            else:
-                print("Wrong data. You should use numbers from the given range.")
-        return self.selectedNumbers
+        try:
+            selectedNumbers = set(int(x) for x in input().split(","))
+            elements = []
+        
+            for x in selectedNumbers: 
+                if x in range(self.config.startOfRange, self.config.endOfRange):
+                    elements.append(x)
+                else:
+                    print("Wrong data. You should use numbers from the given range.")
+        except:
+            print("You should use only numbers")
+            selectedNumbers = {}
+        return selectedNumbers
 
     def is_numbers_valid(self, setSelectedNumbers):
         if len(setSelectedNumbers) != self.config.playerNumbers:

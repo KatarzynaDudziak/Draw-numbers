@@ -13,10 +13,7 @@ def main():
     replay = True
     while replay:
         game.choose_level(configs, player)
-        try:
-            playerNumbers = game.get_numbers()
-        except:
-            playerNumbers = []
+        playerNumbers = game.get_numbers()
 
         while not game.is_numbers_valid(playerNumbers):
             playerNumbers = game.get_numbers()
