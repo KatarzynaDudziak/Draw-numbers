@@ -16,23 +16,23 @@ class Game:
             print(f"{i} - {element.difficulty}")
             i += 1
 
-    def get_level_from_user(self):
+    def get_config_from_user(self):
         try:
             level = int(input()) -1
         except:
             level = - 1
         return level
 
-    def choose_level(self, configs, player: Player):
+    def choose_config(self, configs, player: Player):
         self.print_configs(configs, player)
-        level = self.get_level_from_user()
+        level = self.get_config_from_user()
 
         while not (level >= 0 and level < len(configs)):
-            print(f"{player.name} the selected level is incorrect!")
+            print(f"{player.get_name()} the selected level is incorrect!")
             self.print_configs(configs, player)
-            level = self.get_level_from_user()
+            level = self.get_config_from_user()
 
-        print(f"{player.name} you selected level: {level + 1}")
+        print(f"{player.get_name()} you selected level: {level + 1}")
         self.config = configs[level]
 
     def get_config(self) -> Config:

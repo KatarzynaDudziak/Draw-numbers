@@ -1,101 +1,87 @@
 from main import *
 import pytest
+from Player import Player
 
 
-player = Player(name="player", level=1, playerPoints=0)
+
 configs = [
-        Config(1, 10, 3, "easy", 10),
-        Config(1, 50, 5, "medium", 20),
-        Config(1, 100, 8, "hard", 40)]
+        Config(1, 10, 3, "easy", 5),
+        Config(1, 50, 5, "medium", 10),
+        Config(1, 100, 8, "hard", 15)]
 
+class TestPlayer():
 
-def test_get_name(mocker):
-    input_mock = mocker.patch("main.input")
-    input_mock.return_value = "kasia"
-    result = get_name()
-    assert result == "kasia"
+    def test_create_player_object(self, mocker):
+        input_mock = mocker.patch("Player.input")
+        input_mock.return_value = "asd"
+        Player()
+        
+    def test_input_valid_name(self, mocker):
+        input_mock = mocker.patch("Player.input")
+        input_mock.return_value = "tomek"
+        player = Player()
+        assert player.get_name() == "tomek"
 
+    def test_input_invalid_name(self, mocker):
+        input_mock = mocker.patch("Player.input")
+        input_mock.return_value = ""
+        player = Player()
+        assert player.get_name() == "player"
 
-def test_get_empty_name(mocker):
-    input_mock = mocker.patch("main.input")
-    input_mock.return_value = ""
-    result = get_name()
-    assert result == "player"
+    def test_add_points(self, mocker):
+        input_mock = mocker.patch("Player.input")
+        input_mock.return_value = ""
+        mocker.patch("Player.time")
+        player = Player()
+        result = player.add_points(5)
+        assert result == 5
+        result = player.add_points(0)
+        assert result == 5
+        result = player.add_points(3)
+        assert result == 8
 
+class TestGame():
 
-def test_choose_level(mocker):
-    input_mock = mocker.patch("main.input")
-    input_mock.return_value = "1"
-    result = choose_level(player, configs)
-    assert result == 1
+    def test_create_game_object(self):
+        Game()
 
-
-def test_choose_negative_level(mocker):
-    input_mock = mocker.patch("main.input")
-    input_mock.return_value = "-1"
-    result = choose_level(player, configs)
-    assert result == -1
-
-
-def test_choose_letter_level(mocker):
-    input_mock = mocker.patch("main.input")
-    input_mock.return_value = "a"
-    result = choose_level(player, configs)
-    assert result == -1
-
-
-def test_is_level_correct():
-    player.level = 1
-    result = is_level_correct(configs, player)
-    assert result == True
-
-
-def test_is_level_incorrect_negative_value():
-    player.level = -1
-    result = is_level_correct(configs, player)
-    assert result == False
-
-
-def test_is_level_incorrect_number_higher_than_config():
-    player.level = 4
-    result = is_level_correct(configs, player)
-    assert result == False
-
-
-def test_get_numbers(mocker):
-    input_mock = mocker.patch("main.input")
-    input_mock.return_value = "1,2,3"
-    result = get_numbers(configs[0])
-    assert result == {1,2,3}
-
-
-def test_get_numbers_with_wrong_data(mocker):
-    input_mock = mocker.patch("main.input")
-    input_mock.return_value = "a,b,c"
-    result = get_numbers(configs[0])
-    assert result == -1
-
-
-def test_get_numbers_without_comma(mocker):
-    input_mock = mocker.patch("main.input")
-    input_mock.return_value = "1 * a B @ #"
-    result = get_numbers(configs[0])
-    assert result == -1
-
-
-def test_validated_numbers():
-    setSelectedNumbers = {1,2,3}
-    result = validated_numbers(setSelectedNumbers, configs[0])
-    assert result == True
-
-
-def test_validated_numbers_higher_than_config():
-    setSelectedNumbers = {1,2,3,4,5}
-    result = validated_numbers(setSelectedNumbers, configs[0])
-    assert result == False
-
-
-def test_validated_numbers_lower_than_config():
-    setSelectedNumbers = {1,2}
-    result = validated_numbers(setSelectedNumbers, configs[0])
-    assert result == False
+    def test_get_valid_config_from_user(self, mocker):
+        input_mock = mocker.patch("Game.input")
+        game = Game()
+        input_mock.return_value = "1"
+        result = game.get_config_from_user()
+        assert result == 0
+        
+    def test_get_invalid_config_from_user(self, mocker):
+        input_mock = mocker.patch("Game.input")
+        game = Game()
+        input_mock.return_value = "w"
+        result = game.get_config_from_user()
+        assert result == -1
+        input_mock.return_value = ""
+        result = game.get_config_from_user()
+        assert result == -1
+        
+    def test_choose_valid_config(self, mocker):
+        game = Game()
+        input_mock = mocker.patch("Game.input")
+        input_mock.return_value = "1"
+        player_mock = mocker.patch("Game.Player")
+        player_mock.get_name.return_value = "player"
+        game.choose_config(configs, player_mock)
+        assert player_mock.get_name.call_count == 1
+        
+    def test_choose_invalid_config(self, mocker):
+        game = Game()
+        input_mock = mocker.patch("Game.input")
+        input_mock.side_effect = [4,2]
+        player_mock = mocker.patch("Game.Player")
+        player_mock.get_name.return_value = "player"
+        game.choose_config(configs, player_mock)
+        assert player_mock.get_name.call_count == 2
+    
+    def test_get_valid_numbers(self, mocker):
+        game = Game()
+        
+        
+        

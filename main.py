@@ -12,7 +12,7 @@ def main():
     playerName = player.get_name()
     replay = True
     while replay:
-        game.choose_level(configs, player)
+        game.choose_config(configs, player)
         playerNumbers = game.get_numbers()
 
         while not game.is_numbers_valid(playerNumbers):
