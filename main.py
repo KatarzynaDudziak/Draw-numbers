@@ -14,10 +14,7 @@ def main():
     while replay:
         game.choose_config(configs, player)
         playerNumbers = game.get_numbers()
-
-        while not game.is_numbers_valid(playerNumbers):
-            playerNumbers = game.get_numbers()
-        
+        game.is_numbers_valid(playerNumbers)
         game.start_draw()
         drawnNumbers = game.draw_numbers()
         hitNumbers = game.find_hit_numbers(playerNumbers, drawnNumbers)

@@ -39,24 +39,28 @@ class Game:
         return self.config
 
     def get_numbers(self):
-        print(
-            f"Enter your {self.config.playerNumbers} unique numbers from "
-            f"{self.config.startOfRange} to {self.config.endOfRange} separated by a comma:")
+        retryInput = True
+        while retryInput:
+            print(
+                f"Enter your {self.config.playerNumbers} unique numbers from "
+                f"{self.config.startOfRange} to {self.config.endOfRange} separated by a comma:")
 
-        try:
-            selectedNumbers = set(int(x) for x in input().split(","))
-        except:
-            return set()
-        
+            try:
+                selectedNumbers = set(int(x) for x in input().split(","))
+                if self.is_numbers_valid(selectedNumbers) == True:
+                    retryInput = False
+            except:
+                retryInput = True
+            
         return selectedNumbers
 
-    def is_numbers_valid(self, setSelectedNumbers):
-        for x in setSelectedNumbers:
+    def is_numbers_valid(self, selectedNumbers):
+        for x in selectedNumbers:
             if not x in range(self.config.startOfRange, self.config.endOfRange):
                 print("Wrong data. You should use numbers from the given range.")
                 return False
 
-        if len(setSelectedNumbers) != self.config.playerNumbers:
+        if len(selectedNumbers) != self.config.playerNumbers:
             return False
         return True
 

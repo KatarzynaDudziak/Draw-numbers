@@ -93,12 +93,12 @@ class TestGame():
     def test_get_invalid_character(self, mocker):
         game = Game()
         input_mock = mocker.patch("Game.input")
-        input_mock.side_effect = ["1", "a,cd,,"]
+        input_mock.side_effect = ["1", "a,cd,,", "1,2,3"]
         player_mock = mocker.patch("Game.Player")
         player_mock.get_name.return_value = "player"
         game.choose_config(configs, player_mock)
         result = game.get_numbers()
-        assert result == set()
+        assert result == {1,2,3}
 
     def test_is_nubers_valid(self, mocker):
         game = Game()
