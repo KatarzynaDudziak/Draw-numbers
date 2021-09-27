@@ -45,19 +45,17 @@ class Game:
 
         try:
             selectedNumbers = set(int(x) for x in input().split(","))
-            elements = []
-        
-            for x in selectedNumbers: 
-                if x in range(self.config.startOfRange, self.config.endOfRange):
-                    elements.append(x)
-                else:
-                    print("Wrong data. You should use numbers from the given range.")
         except:
-            print("You should use only numbers")
-            selectedNumbers = {}
+            return set()
+        
         return selectedNumbers
 
     def is_numbers_valid(self, setSelectedNumbers):
+        for x in setSelectedNumbers:
+            if not x in range(self.config.startOfRange, self.config.endOfRange):
+                print("Wrong data. You should use numbers from the given range.")
+                return False
+
         if len(setSelectedNumbers) != self.config.playerNumbers:
             return False
         return True
